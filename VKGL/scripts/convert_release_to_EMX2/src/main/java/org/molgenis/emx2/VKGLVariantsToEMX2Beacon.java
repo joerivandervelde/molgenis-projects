@@ -23,21 +23,21 @@ public class VKGLVariantsToEMX2Beacon {
    *       of course permissions allowing or using an auth token.
    *       <ul>
    *         <li>curl -X POST --data-binary @GenomicVariationsClinInterpr.tsv
-   *             https://vkgl-emx2.molgeniscloud.org/VKGL_public_consensus_sep2022/api/csv/GenomicVariationsClinInterpr
+   *             https://vkgl-emx2.molgeniscloud.org/VKGL_public_consensus_apr2024/api/csv/GenomicVariationsClinInterpr
    *         <li>curl -X POST --data-binary @GenomicVariations.tsv
-   *             https://vkgl-emx2.molgeniscloud.org/VKGL_public_consensus_sep2022/api/csv/GenomicVariations
+   *             https://vkgl-emx2.molgeniscloud.org/VKGL_public_consensus_apr2024/api/csv/GenomicVariations
    *       </ul>
    * </ol>
    */
   public static void main(String args[]) throws Exception {
     System.out.println("Starting...");
 
-    File dataDirectory = new File("/Users/joeri/Documents/VKGL/vkgl-emx2/jan2023");
-    File VKGLPublicConsensusFile = new File(dataDirectory, "VKGL_public_consensus_jan2023.tsv");
+    File dataDirectory = new File("/Users/joeri/Documents/VKGL/vkgl-emx2/apr2024");
+    File VKGLPublicConsensusFile = new File(dataDirectory, "VKGL_public_consensus_apr2024.tsv");
 
     Scanner scanner = new Scanner(VKGLPublicConsensusFile);
     FileWriter genomicVariationsFileWriter =
-        new FileWriter(new File(dataDirectory, "GenomicVariations.tsv"));
+        new FileWriter(new File(dataDirectory, "GenomicVariations.csv"));
     BufferedWriter genomicVariationsBufferedWriter =
         new BufferedWriter(genomicVariationsFileWriter);
     genomicVariationsBufferedWriter.write(
@@ -69,6 +69,11 @@ public class VKGLVariantsToEMX2Beacon {
       hgvsCNotation = hgvsCNotation.length() < 256 ? hgvsCNotation : "n/a";
       String hgvsPNotation = (split[9] + ":" + split[8]);
       hgvsPNotation = hgvsPNotation.length() < 256 ? hgvsPNotation : "n/a";
+
+      if(split[0].length() > 255 || split[2].length() > 255 || split[3].length() > 255 || split[4].length() > 255 || split[5].length() > 255 || split[6].length() > 255 || split[11].length() > 255){
+        System.out.println("WARNING: Too long element in line: " + line);
+        continue;
+      }
 
       genomicVariationsBufferedWriter.write(
           split[0] // ID
@@ -104,7 +109,7 @@ public class VKGLVariantsToEMX2Beacon {
 
     // write GenomicVariationsClinInterpr
     FileWriter genomicVariationsClinInterprFileWriter =
-        new FileWriter(new File(dataDirectory, "GenomicVariationsClinInterpr.tsv"));
+        new FileWriter(new File(dataDirectory, "GenomicVariationsClinInterpr.csv"));
     BufferedWriter genomicVariationsClinInterprBufferedWriter =
         new BufferedWriter(genomicVariationsClinInterprFileWriter);
     genomicVariationsClinInterprBufferedWriter.write("id,clinicalRelevance\n");
